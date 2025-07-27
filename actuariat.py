@@ -19,7 +19,7 @@ def display_cover_page():
     st.markdown("""
     ### Projet d'Actuariat Vie
     **Membres du Groupe** : Doumbia Moussa, Tokpa Franck, Sanogo Karnon, Sossou Toussaint, SORO MAIMOUNA 
-    **Institution** : Classe : Master d'Actuariat  
+    **Classe** : Master d'Actuariat  
     **Contexte** : Ce projet développe une application pour calculer la prime commerciale du produit "JUNIOR PENSION", une annuité différée temporaire conçue pour répondre aux besoins de financement de la retraite dans la zone CIMA. L'application utilise les tables de mortalité CIMA F et un taux d'intérêt technique de 4,0 %.
 
     Cliquez sur le bouton ci-dessous pour accéder à la calculatrice.

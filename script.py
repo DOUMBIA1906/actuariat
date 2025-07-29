@@ -67,11 +67,23 @@ def display_calculator():
         fv = st.number_input("Valeur future (FV, en FCFA)", min_value=0.0, value=7778554.0, step=1000.0)
         r = st.number_input("Taux d'intérêt annuel (r, en %)", min_value=0.0, value=4.0, step=0.1) / 100
     with col4:
-        n_annual = st.number_input("Durée (n, en années)", min_value=1, max_value=50, value=12, step=1)
+        st.write(f"Durée (n, en années) : {n} (utilisée depuis la section Prime Commerciale)")
 
-    # Bouton pour calculer
-    if st.button("Calculer les Primes"):
-        # Calcul de la prime commerciale
+    # Boutons pour calculer
+    col_calc1, col_calc2 = st.columns(2)
+    with col_calc1:
+        calculate_commerciale = st.button("Calculer la Prime Commerciale")
+    with col_calc2:
+        calculate_annuelle = st.button("Calculer la Prime Annuelle")
+
+    # Initialisation des variables de résultat
+    pup = None
+    vap_frais = None
+    prime_commerciale = None
+    prime_annuelle = None
+
+    # Calcul de la prime commerciale
+    if calculate_commerciale:
         i = 0.04
         v = 1 / (1 + i)
 
@@ -147,9 +159,13 @@ def display_calculator():
         # Prime commerciale : P = (P.U.P. + VAP_Frais + 5000) / (1 - 0.35)
         prime_commerciale = (pup + vap_frais + 5000) / (1 - 0.35)
 
-        # Calcul de la prime annuelle
+    # Calcul de la prime annuelle
+    if calculate_annuelle:
         try:
-            denominator = (1 + r) ** n_annual - 1
+            if r <= 0 or n <= 0 or fv <= 0:
+                st.error("Erreur : FV, r et n doivent être positifs pour le calcul de la prime annuelle.")
+                return
+            denominator = (1 + r) ** n - 1
             if denominator == 0:
                 st.error("Erreur : Division par zéro dans le calcul de la prime annuelle (taux ou durée invalide).")
                 return
@@ -158,14 +174,17 @@ def display_calculator():
             st.error(f"Erreur dans le calcul de la prime annuelle : {str(e)}")
             return
 
-        # Affichage des résultats
+    # Affichage des résultats
+    if pup is not None or prime_commerciale is not None or vap_frais is not None or prime_annuelle is not None:
         st.header("Résultats")
-        st.subheader("Prime Commerciale")
-        st.write(f"**Prime Pure Unique (P.U.P.)** : {pup:,.2f} FCFA")
-        st.write(f"**Valeur Actuelle des Frais sur Prestations** : {vap_frais:,.2f} FCFA")
-        st.write(f"**Prime Commerciale** : {prime_commerciale:,.2f} FCFA")
-        st.subheader("Prime Annuelle")
-        st.write(f"**Prime Annuelle** : {prime_annuelle:,.2f} FCFA")
+        if pup is not None and vap_frais is not None and prime_commerciale is not None:
+            st.subheader("Prime Commerciale")
+            st.write(f"**Prime Pure Unique (P.U.P.)** : {pup:,.2f} FCFA")
+            st.write(f"**Valeur Actuelle des Frais sur Prestations** : {vap_frais:,.2f} FCFA")
+            st.write(f"**Prime Commerciale** : {prime_commerciale:,.2f} FCFA")
+        if prime_annuelle is not None:
+            st.subheader("Prime Annuelle")
+            st.write(f"**Prime Annuelle** : {prime_annuelle:,.2f} FCFA")
 
 # Gestion des pages
 if "page" not in st.session_state:
